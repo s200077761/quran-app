@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>القرآن الكريم — بحث وقراءة وتجويد</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- الشريط العلوي -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">﷽</span>
+      <div class="brand-text">
+        <h1>القرآن الكريم</h1>
+        <p>مصحف المدينة · بحث · ترجمة · ترتيل وتجويد</p>
+      </div>
+    </div>
+    <button class="icon-btn" id="btnSettings" title="إعدادات الذكاء الاصطناعي" aria-label="إعدادات الذكاء الاصطناعي">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M19.14 12.94a7.5 7.5 0 0 0 .06-.94 7.5 7.5 0 0 0-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.66 8.84a.5.5 0 0 0 .12.64l2.03 1.58a7.5 7.5 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.23.4.32.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.04.24.24.42.5.42h3.84c.26 0 .46-.18.5-.42l.36-2.54a7.3 7.3 0 0 0 1.63-.94l2.39.96c.2.1.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 3Z"/></svg>
+    </button>
+  </header>
+
+  <!-- منطقة البحث -->
+  <section class="search-zone">
+    <div class="mode-tabs" role="tablist">
+      <button class="mode-tab active" data-mode="text" role="tab">بحث نصي</button>
+      <button class="mode-tab" data-mode="ai" role="tab">بحث ذكي <span class="ai-badge">AI</span></button>
+    </div>
+    <div class="search-bar">
+      <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5Zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14Z"/></svg>
+      <input type="text" id="searchInput" placeholder="ابحث في الآيات…" autocomplete="off">
+      <button class="clear-btn" id="btnClear" title="مسح" aria-label="مسح">×</button>
+    </div>
+    <p class="search-hint" id="searchHint">اكتب كلمة أو جملة للبحث الفوري في 6236 آية.</p>
+  </section>
+
+  <!-- أشرطة القراءة -->
+  <section class="reading-bar">
+    <div class="rb-item">
+      <label for="langSelect">الترجمة</label>
+      <select id="langSelect" class="rb-select"></select>
+    </div>
+    <div class="rb-item">
+      <label for="reciterSelect">القارئ</label>
+      <select id="reciterSelect" class="rb-select"></select>
+    </div>
+    <label class="rb-toggle">
+      <input type="checkbox" id="tajweedToggle">
+      <span class="rb-switch"></span>
+      <span>التجويد الملون</span>
+    </label>
+  </section>
+
+  <!-- المحتوى -->
+  <main class="content" id="content">
+    <aside class="surah-index" id="surahIndex">
+      <div class="index-header">
+        <h2>فهرس السور</h2>
+        <span id="surahCount"></span>
+      </div>
+      <div class="surah-list" id="surahList"></div>
+    </aside>
+    <section class="viewer" id="viewer">
+      <div class="welcome" id="welcome">
+        <div class="welcome-art">﴾<span>﷽</span>﴿</div>
+        <h2>أهلاً بك في المصحف الذكي</h2>
+        <p>اختر سورة من الفهرس، أو ابحث بكلمة، أو استخدم <strong>البحث الذكي</strong>. استمع للترتيل والتجويد، واختر لغة الترجمة، واطّلع على شرح الكلمات والتفسير.</p>
+        <div class="quick-tips">
+          <button class="tip" data-q="الصبر">💡 آيات عن الصبر</button>
+          <button class="tip" data-q="آية الكرسي">💡 آية الكرسي</button>
+          <button class="tip" data-q="بر الوالدين">💡 آيات عن بر الوالدين</button>
+          <button class="tip" data-q="الرحمة">💡 آيات عن الرحمة</button>
+        </div>
+      </div>
+      <div class="results" id="results"></div>
+      <div class="surah-view" id="surahView"></div>
+    </section>
+  </main>
+
+  <!-- نافذة إعدادات الذكاء الاصطناعي -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h2>إعدادات البحث الذكي</h2>
+        <button class="icon-btn" id="btnCloseSettings" aria-label="إغلاق">×</button>
+      </div>
+      <p class="modal-desc">اختر مزوّد الذكاء الاصطناعي وأدخل مفتاحه. الأفضل تشغيل <code>node serve.mjs</code> وفتح <code>http://localhost:8080</code>.</p>
+
+      <label class="field">
+        <span>المزوّد</span>
+        <select id="cfgProvider" class="select"></select>
+      </label>
+      <label class="field">
+        <span>مفتاح الـ API</span>
+        <input type="password" id="cfgApiKey" dir="ltr" placeholder="مفتاح الـ API">
+        <small id="keyHint"></small>
+      </label>
+      <label class="field">
+        <span>اسم النموذج</span>
+        <input type="text" id="cfgModel" dir="ltr" placeholder="auto">
+        <small>يُملأ تلقائياً حسب المزوّد، ويمكنك تعديله.</small>
+      </label>
+      <label class="field">
+        <span>رابط الـ API (متقدم)</span>
+        <input type="text" id="cfgBaseUrl" dir="ltr" placeholder="/api">
+        <small id="baseUrlHint">الافتراضي <code>/api</code> (عبر الخادم المحلي).</small>
+      </label>
+
+      <div class="modal-actions">
+        <button class="btn secondary" id="btnTest">اختبار الاتصال</button>
+        <button class="btn primary" id="btnSave">حفظ</button>
+      </div>
+      <p class="test-result" id="testResult"></p>
+    </div>
+  </div>
+
+  <!-- عنصر الصوت المشترك -->
+  <audio id="player" preload="none"></audio>
+
+  <!-- مؤشر تحميل -->
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="quran-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+Quran App — Attribution Notice
+==============================
+
+This project is dual-licensed under the Apache License 2.0 and the MIT
+License (SPDX: Apache-2.0 OR MIT). You may choose either license.
+See LICENSE-APACHE and LICENSE-MIT.
+
+Third-party content
+-------------------
+
+The Quran text, translations, tafsir, tajweed annotations and word-by-word
+data bundled in www/quran-data.js are NOT covered by the code license above.
+They are used under the terms of their respective providers:
+
+- Quran text (Uthmani script, Hafs 'an 'Asim, matching the Madinah Mushaf
+  of King Fahd Complex) and surah/juz/page metadata:
+    Tanzil Project — https://tanzil.net (CC BY 3.0)
+
+- Translations, Al-Muyassar tafsir (King Fahad Quran Complex edition),
+  tajweed text, and word-by-word data:
+    AlQuran.cloud / Islamic Network — https://alquran.cloud
+
+- Audio recitations:
+    Islamic Network CDN — https://islamic.network
+
+Please retain this attribution and link back to the sources as required by
+their terms when redistributing.

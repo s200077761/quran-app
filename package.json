@@ -1,0 +1,53 @@
+{
+  "name": "quran-app",
+  "version": "1.0.0",
+  "description": "تطبيق القرآن الكريم — مصحف المدينة + بحث + ترجمة + ترتيل وتجويد",
+  "license": "(Apache-2.0 OR MIT)",
+  "main": "electron-main.js",
+  "scripts": {
+    "start": "node serve.mjs",
+    "build:data": "node build-data.mjs",
+    "desktop": "electron .",
+    "desktop:dist": "electron-builder",
+    "cap:sync": "cap sync",
+    "cap:add:android": "cap add android",
+    "cap:add:ios": "cap add ios"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.3",
+    "@capacitor/cli": "^6.2.3",
+    "@capacitor/core": "^6.2.3",
+    "@capacitor/ios": "^6.2.3",
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.quran.app",
+    "productName": "QuranApp",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "www/**/*",
+      "electron-main.js",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Education"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.education"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    }
+  }
+}

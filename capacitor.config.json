@@ -1,0 +1,8 @@
+{
+  "appId": "com.quran.app",
+  "appName": "القرآن الكريم",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
