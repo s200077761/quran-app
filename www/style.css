@@ -270,6 +270,31 @@ body {
   .brand-text p { display: none; }
 }
 
+/* ===== اعتماد المؤلف ===== */
+.credits {
+  display: flex; align-items: center; gap: 18px;
+  background: linear-gradient(135deg, #0f766e, #148f7f);
+  color: #fff; border-radius: var(--radius); padding: 22px 26px;
+  margin-top: 26px; box-shadow: 0 10px 28px rgba(15,118,110,.28);
+}
+.credits-photo {
+  width: 72px; height: 72px; border-radius: 50%; object-fit: cover; flex: none;
+  border: 3px solid rgba(255,255,255,.55); box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+.credits-body { flex: 1; min-width: 0; }
+.credits-title { font-size: 13px; opacity: .85; margin-bottom: 3px; }
+.credits-name { font-size: 19px; font-weight: 800; line-height: 1.4; }
+.credits-links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 10px; }
+.credits-links a {
+  color: #fff; text-decoration: none; font-size: 14px; font-weight: 500;
+  background: rgba(255,255,255,.16); padding: 6px 14px; border-radius: 20px; transition: background .15s;
+}
+.credits-links a:hover { background: rgba(255,255,255,.3); }
+@media (max-width: 860px) {
+  .credits { flex-direction: column; text-align: center; }
+  .credits-links { justify-content: center; }
+}
+
 /* ===== أشرطة القراءة ===== */
 .reading-bar {
   display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end;
