@@ -18,7 +18,7 @@
     "@capacitor/cli": "^6.2.3",
     "@capacitor/core": "^6.2.3",
     "@capacitor/ios": "^6.2.3",
-    "electron": "^30.0.0",
+    "electron": "^42.11.16",
     "electron-builder": "^24.13.3"
   },
   "build": {
