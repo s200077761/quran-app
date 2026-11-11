@@ -311,7 +311,7 @@
 
   /* ---------- البحث الذكي ---------- */
   const PROVIDERS = [
-    { id: 'freellmapi', label: 'FreeLLMAPI (محلي)', baseUrl: '/api', upstream: '', model: 'auto', keyPh: 'freellmapi-…', keyHint: 'المفتاح الموحّد من صفحة Keys في FreeLLMAPI.' },
+    { id: 'freellmapi', label: 'FreeLLMAPI (محلي)', baseUrl: '/api', upstream: 'http://localhost:3001/v1', model: 'auto', keyPh: 'freellmapi-…', keyHint: 'المفتاح الموحّد من صفحة Keys في FreeLLMAPI.' },
     { id: 'openrouter', label: 'OpenRouter', baseUrl: '/api', upstream: 'https://openrouter.ai/api/v1', model: 'deepseek/deepseek-chat', keyPh: 'sk-or-v1-…', keyHint: 'مفتاح من openrouter.ai (يبدأ بـ sk-or-v1-).' },
     { id: 'deepseek', label: 'DeepSeek', baseUrl: '/api', upstream: 'https://api.deepseek.com/v1', model: 'deepseek-chat', keyPh: 'sk-…', keyHint: 'مفتاح من platform.deepseek.com.' },
     { id: 'kimi', label: 'Kimi (Moonshot)', baseUrl: '/api', upstream: 'https://api.moonshot.ai/v1', model: 'kimi-k2-0711-preview', keyPh: 'sk-…', keyHint: 'مفتاح من platform.moonshot.ai.' },
@@ -323,8 +323,22 @@
   ];
   function providerById(id) { return PROVIDERS.find((p) => p.id === id) || PROVIDERS[0]; }
   const DEFAULT_AI = { provider: 'freellmapi', apiKey: '', model: 'auto', baseUrl: '/api' };
-  function loadAI() { try { return { ...DEFAULT_AI, ...JSON.parse(localStorage.getItem('quran_ai_config') || '{}') }; } catch { return { ...DEFAULT_AI }; } }
-  function saveAI(cfg) { localStorage.setItem('quran_ai_config', JSON.stringify(cfg)); }
+  // تخفيف بسيط للمفتاح عند التخزين (base64) — ليس تشفيراً حقيقياً، لكنه يمنع القراءة العارضة.
+  // الحماية الحقيقية من XSS تأتي من سياسة CSP في index.html.
+  function encodeConfig(cfg) {
+    try { return btoa(unescape(encodeURIComponent(JSON.stringify(cfg)))); } catch { return JSON.stringify(cfg); }
+  }
+  function decodeConfig(s) {
+    try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch { try { return JSON.parse(s); } catch { return null; } }
+  }
+  function loadAI() {
+    try {
+      const raw = localStorage.getItem('quran_ai_config');
+      if (!raw) return { ...DEFAULT_AI };
+      return { ...DEFAULT_AI, ...(decodeConfig(raw) || {}) };
+    } catch { return { ...DEFAULT_AI }; }
+  }
+  function saveAI(cfg) { localStorage.setItem('quran_ai_config', encodeConfig(cfg)); }
   function renderProviderOptions() { el.cfgProvider.innerHTML = PROVIDERS.map((p) => '<option value="' + p.id + '">' + p.label + '</option>').join(''); }
   function applyAIToForm() {
     const c = loadAI(); const p = providerById(c.provider);
@@ -351,6 +365,21 @@
       else headers['x-llm-base-url'] = p.upstream;
     }
     return { url: base + path, headers };
+  }
+
+  // تنفيذ طلب LLM: عبر جسر IPC آمن في سطح المكتب (Electron)، وإلا عبر fetch العادي
+  async function aiFetch(req, body) {
+    if (window.NATIVE && window.NATIVE.llmFetch) {
+      const r = await window.NATIVE.llmFetch({
+        url: req.url, method: body ? 'POST' : 'GET', headers: req.headers, body: body ? JSON.stringify(body) : undefined,
+      });
+      return {
+        ok: r.ok, status: r.status,
+        json: async () => { try { return JSON.parse(r.body || '{}'); } catch { return {}; } },
+        text: async () => r.body || '',
+      };
+    }
+    return fetch(req.url, { method: body ? 'POST' : 'GET', headers: req.headers, body: body ? JSON.stringify(body) : undefined });
   }
 
   let lastAiQuery = '', lastAiResolved = [];
@@ -381,7 +410,7 @@
     };
     try {
       const req = llmRequestOptions(cfg, '/chat/completions');
-      const res = await fetch(req.url, { method: 'POST', headers: req.headers, body: JSON.stringify(body) });
+      const res = await aiFetch(req, body);
       if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + (await res.text().catch(() => '')).slice(0, 200));
       const data = await res.json();
       const content = (data.choices && data.choices[0] && data.choices[0].message) ? (data.choices[0].message.content || '') : '';
@@ -483,7 +512,7 @@
     if (!cfg.apiKey) { setTestResult('أدخل مفتاح الـ API أولاً.', 'err'); return; }
     try {
       const req = llmRequestOptions(cfg, '/models');
-      const res = await fetch(req.url, { headers: req.headers });
+      const res = await aiFetch(req, null);
       if (res.ok) {
         let count = 0; try { const d = await res.json(); count = (d.data && d.data.length) || 0; } catch {}
         setTestResult('✓ تم الاتصال بنجاح' + (count ? ' — ' + count + ' نموذج متاح' : '') + '.', 'ok');

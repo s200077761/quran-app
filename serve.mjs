@@ -27,6 +27,19 @@ const MIME = {
   '.ico': 'image/x-icon',
 };
 
+// قائمة بيضاء لمضيفي مزوّدي الذكاء الاصطناعي (تمنع SSRF عبر عناوين داخلية/خبيثة)
+const ALLOWED_UPSTREAM_HOSTS = new Set([
+  'localhost', '127.0.0.1',
+  'openrouter.ai',
+  'api.deepseek.com',
+  'api.moonshot.ai',
+  'api.moonshot.cn',
+  'api.mistral.ai',
+  'generativelanguage.googleapis.com',
+  'api.openai.com',
+  'api.z.ai',
+]);
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
   const pathname = decodeURIComponent(url.pathname);
@@ -35,9 +48,12 @@ const server = http.createServer(async (req, res) => {
   if (pathname.startsWith('/api/')) {
     const upstreamRaw = req.headers['x-llm-base-url'] || LLM_BASE;
     const upstream = String(upstreamRaw).replace(/\/+$/, '');
-    if (!/^https?:\/\//i.test(upstream)) {
+    // تحقق من البروتوكول ومن القائمة البيضاء للمضيفين (يمنع SSRF وتسريب المفتاح لخوادم خبيثة)
+    let upstreamHost = null;
+    try { upstreamHost = new URL(upstream).hostname; } catch {}
+    if (!/^https?:\/\//i.test(upstream) || !upstreamHost || !ALLOWED_UPSTREAM_HOSTS.has(upstreamHost)) {
       res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
-      res.end(JSON.stringify({ error: { message: 'عنوان المزوّد غير صالح' } }));
+      res.end(JSON.stringify({ error: { message: 'عنوان المزوّد غير مسموح به' } }));
       return;
     }
     const target = upstream + pathname.slice('/api'.length) + url.search;
